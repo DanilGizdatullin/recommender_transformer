@@ -150,9 +150,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_csv_path")
     parser.add_argument("--epochs", type=int, default=500)
+    parser.add_argument("--batch-size", type=int, default=32)
     args = parser.parse_args()
 
     train(
         data_csv_path=args.data_csv_path,
         epochs=args.epochs,
+        batch_size=args.batch_size
     )
