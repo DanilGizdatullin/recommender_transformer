@@ -72,9 +72,11 @@ def train(
 
     data.sort_values(by="timestamp", inplace=True)
 
-    data, mapping, inverse_mapping = map_column(data, col_name="movieId")
+    data, mapping, _ = map_column(data, col_name="movieId")
 
     grp_by_train = data.groupby(by="userId")
+    del data
+    print('#### del data ####')
 
     groups = list(grp_by_train.groups)
 
