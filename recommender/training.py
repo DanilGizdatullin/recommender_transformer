@@ -99,15 +99,17 @@ def train(
     train_loader = DataLoader(
         train_data,
         batch_size=batch_size,
-        num_workers=8,
+        num_workers=0,
         shuffle=True,
     )
     val_loader = DataLoader(
         val_data,
         batch_size=batch_size,
-        num_workers=8,
+        num_workers=0,
         shuffle=False,
     )
+    print("`train_loader` prepared")
+    print("`val_loader` prepared")
 
     model = Recommender(
         vocab_size=len(mapping) + 2,
