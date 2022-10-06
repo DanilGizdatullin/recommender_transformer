@@ -68,7 +68,7 @@ def train(
     epochs: int = 2000,
     history_size: int = 120,
 ):
-    data = pd.read_csv(data_csv_path)
+    data = pd.read_feather(data_csv_path)
 
     data.sort_values(by="timestamp", inplace=True)
 
