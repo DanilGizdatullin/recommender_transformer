@@ -96,13 +96,13 @@ def train(
     train_loader = DataLoader(
         train_data,
         batch_size=batch_size,
-        num_workers=2,
+        num_workers=3,
         shuffle=True,
     )
     val_loader = DataLoader(
         val_data,
         batch_size=batch_size,
-        num_workers=2,
+        num_workers=3,
         shuffle=False,
     )
 
