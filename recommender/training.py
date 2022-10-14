@@ -69,11 +69,16 @@ def train(
     history_size: int = 120,
 ):
     data = pd.read_feather(data_csv_path)
+    if 'index' in data.columns:
+        del data['index']
+    data_grp = data.groupby("userId").count()['movieId']
+    data_grp = data_grp[data_grp >= 15]
+    unique_users = data_grp.index.values
+    data = data[data["userId"].isin(unique_users)].reset_index(drop=True)
 
     data.sort_values(by="timestamp", inplace=True)
 
     data, mapping, _ = map_column(data, col_name="movieId")
-    unique_users = data["userId"].unique()
 
     train_data = Dataset(
         df=data,
