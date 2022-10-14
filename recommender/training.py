@@ -26,19 +26,19 @@ def mask_last_elements_list(l1, val_context_size: int = 5):
 
 
 class Dataset(torch.utils.data.Dataset):
-    def __init__(self, groups, grp_by, split, history_size=120):
-        self.groups = groups
-        self.grp_by = grp_by
+    def __init__(self, df, unique_users, split, history_size=120):
+        self.df = df
+        self.unique_users = unique_users
         self.split = split
         self.history_size = history_size
 
     def __len__(self):
-        return len(self.groups)
+        return len(self.unique_users)
 
     def __getitem__(self, idx):
-        group = self.groups[idx]
+        user_id = self.unique_users[idx]
 
-        df = self.grp_by.get_group(group)
+        df = self.df[self.df["userId"] == user_id]
 
         context = get_context(df, split=self.split, context_size=self.history_size)
 
@@ -73,28 +73,20 @@ def train(
     data.sort_values(by="timestamp", inplace=True)
 
     data, mapping, _ = map_column(data, col_name="movieId")
-
-    grp_by_train = data.groupby(by="userId")
-    del data
-    print('#### del data ####')
-
-    groups = list(grp_by_train.groups)
+    unique_users = data["userId"].unique()
 
     train_data = Dataset(
-        groups=groups,
-        grp_by=grp_by_train,
+        df=data,
+        unique_users=unique_users,
         split="train",
         history_size=history_size,
     )
     val_data = Dataset(
-        groups=groups,
-        grp_by=grp_by_train,
+        df=data,
+        unique_users=unique_users,
         split="val",
         history_size=history_size,
     )
-
-    print("len(train_data)", len(train_data))
-    print("len(val_data)", len(val_data))
 
     train_loader = DataLoader(
         train_data,
@@ -108,8 +100,6 @@ def train(
         num_workers=2,
         shuffle=False,
     )
-    print("`train_loader` prepared")
-    print("`val_loader` prepared")
 
     model = Recommender(
         vocab_size=len(mapping) + 2,
