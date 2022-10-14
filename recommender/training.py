@@ -10,6 +10,36 @@ from torch.utils.data import DataLoader
 from recommender.models import Recommender
 from recommender.data_processing import get_context, pad_list, map_column, MASK
 
+src_mock = torch.tensor([126049,   2087,   2108,      1,  74362, 138309,      1, 253102, 141627,
+        141124, 141124,      1, 141124,   1063,      1,      1, 115923,      1,
+           908,      1,   5998,  26121, 105864,      1, 116359,  16082,   1369,
+         27315,   4579,  17422,  13596, 206994,   5406,      1,  31258, 107582,
+        107582,  30039,   4140, 140373,      1,   5162,      1,      1,  96527,
+         34025, 107431,   9681,  38086,   1369,      1,      1, 115923,  16585,
+             0,      0,      0,      0,      0,      0,      0,      0,      0,
+             0,      0,      0,      0,      0,      0,      0,      0,      0,
+             0,      0,      0,      0,      0,      0,      0,      0,      0,
+             0,      0,      0,      0,      0,      0,      0,      0,      0,
+             0,      0,      0,      0,      0,      0,      0,      0,      0,
+             0,      0,      0,      0,      0,      0,      0,      0,      0,
+             0,      0,      0,      0,      0,      0,      0,      0,      0,
+             0,      0,      0])
+
+trg_mock = torch.tensor([126049,   2087,   2108,  12224,  74362, 138309, 140373, 253102, 141627,
+        141124, 141124,  36107, 141124,   1063,   4828,   4828, 115923,  47617,
+           908,   5162,   5998,  26121, 105864,  24684, 116359,  16082,   1369,
+         27315,   4579,  17422,  13596, 206994,   5406,  72539,  31258, 107582,
+        107582,  30039,   4140, 140373,  14727,   5162,   5080,   4433,  96527,
+         34025, 107431,   9681,  38086,   1369, 101000,   4579, 115923,  16585,
+             0,      0,      0,      0,      0,      0,      0,      0,      0,
+             0,      0,      0,      0,      0,      0,      0,      0,      0,
+             0,      0,      0,      0,      0,      0,      0,      0,      0,
+             0,      0,      0,      0,      0,      0,      0,      0,      0,
+             0,      0,      0,      0,      0,      0,      0,      0,      0,
+             0,      0,      0,      0,      0,      0,      0,      0,      0,
+             0,      0,      0,      0,      0,      0,      0,      0,      0,
+             0,      0,      0])
+
 
 def mask_list(l1, p=0.8):
 
@@ -36,28 +66,28 @@ class Dataset(torch.utils.data.Dataset):
         return len(self.unique_users)
 
     def __getitem__(self, idx):
-        user_id = self.unique_users[idx]
+        # user_id = self.unique_users[idx]
+        #
+        # df = self.df[self.df["userId"] == user_id]
+        #
+        # context = get_context(df, split=self.split, context_size=self.history_size)
+        #
+        # trg_items = context["movieId_mapped"].tolist()
+        #
+        # if self.split == "train":
+        #     src_items = mask_list(trg_items)
+        # else:
+        #     src_items = mask_last_elements_list(trg_items)
+        #
+        # pad_mode = "left" if random.random() < 0.5 else "right"
+        # trg_items = pad_list(trg_items, history_size=self.history_size, mode=pad_mode)
+        # src_items = pad_list(src_items, history_size=self.history_size, mode=pad_mode)
+        #
+        # src_items = torch.tensor(src_items, dtype=torch.long)
+        #
+        # trg_items = torch.tensor(trg_items, dtype=torch.long)
 
-        df = self.df[self.df["userId"] == user_id]
-
-        context = get_context(df, split=self.split, context_size=self.history_size)
-
-        trg_items = context["movieId_mapped"].tolist()
-
-        if self.split == "train":
-            src_items = mask_list(trg_items)
-        else:
-            src_items = mask_last_elements_list(trg_items)
-
-        pad_mode = "left" if random.random() < 0.5 else "right"
-        trg_items = pad_list(trg_items, history_size=self.history_size, mode=pad_mode)
-        src_items = pad_list(src_items, history_size=self.history_size, mode=pad_mode)
-
-        src_items = torch.tensor(src_items, dtype=torch.long)
-
-        trg_items = torch.tensor(trg_items, dtype=torch.long)
-
-        return src_items, trg_items
+        return src_mock, trg_mock
 
 
 def train(
